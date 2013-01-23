@@ -1,0 +1,1430 @@
+\documentclass[10pt,landscape]{article}
+
+\usepackage{multicol}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{gauss}
+
+%% taken from http://brunoj.wordpress.com/2009/10/08/latex-the-framed-minipage/
+\newsavebox{\fmbox}
+\newenvironment{fmpage}[1]
+{\begin{lrbox}{\fmbox}\begin{minipage}{#1}}
+{\end{minipage}\end{lrbox}\fbox{\usebox{\fmbox}}}
+
+\usepackage{mathtools}
+\makeatletter
+ 
+\newcommand{\explain}[2]{\underset{\mathclap{\overset{\uparrow}{#2}}}{#1}}
+\newcommand{\explainup}[2]{\overset{\mathclap{\underset{\downarrow}{#2}}}{#1}}
+ 
+\makeatother
+
+% To make this come out properly in landscape mode, do one of the following
+% 1.
+%  pdflatex latexsheet.tex
+%
+% 2.
+%  latex latexsheet.tex
+%  dvips -P pdf  -t landscape latexsheet.dvi
+%  ps2pdf latexsheet.ps
+
+
+% If you're reading this, be prepared for confusion.  Making this was
+% a learning experience for me, and it shows.  Much of the placement
+% was hacked in; if you make it better, let me know...
+
+
+% 2008-04
+% Changed page margin code to use the geometry package. Also added code for
+% conditional page margins, depending on paper size. Thanks to Uwe Ziegenhagen
+% for the suggestions.
+
+% 2006-08
+% Made changes based on suggestions from Gene Cooperman. <gene at ccs.neu.edu>
+
+
+% To Do:
+% \listoffigures \listoftables
+% \setcounter{secnumdepth}{0}
+
+
+% This sets page margins to .5 inch if using letter paper, and to 1cm
+% if using A4 paper. (This probably isn't strictly necessary.)
+% If using another size paper, use default 1cm margins.
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+	{ \geometry{top=.5in,left=.5in,right=.5in,bottom=.5in} }
+	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+
+% Turn off header and footer
+\pagestyle{empty}
+ 
+
+% Redefine section commands to use less space
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%x
+                                {\normalfont\large\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\normalfont\normalsize\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\bfseries}}
+\makeatother
+
+% Define BibTeX command
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+% Don't print section numbers
+\setcounter{secnumdepth}{0}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+
+
+% -----------------------------------------------------------------------
+
+\begin{document}
+
+\raggedright
+\footnotesize
+\begin{multicols}{3}
+
+
+% multicol parameters
+% These lengths are set only within the two main columns
+%\setlength{\columnseprule}{0.25pt}
+\setlength{\premulticols}{1pt}
+\setlength{\postmulticols}{1pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{2pt}
+
+\begin{center}
+     \normalsize{Linear Modeling Summary Sheet} \\
+    \footnotesize{
+    Compiled by: Shravan Vasishth (vasishth@uni-potsdam.de)\\
+    Version dated: \today}
+\end{center}
+
+%\textbf{Background for this summary sheet}
+
+%This is a summary for myself, for reviewing the material I learnt while doing an MSc-level course in statistics; your mileage may vary.
+Note: Everything is in matrix form unless a lower case letter with a subscript (such as $x_i$) is used.
+
+
+\section{Background}
+
+\subsection{Some key distributional results}
+
+\section{Basic facts}
+
+\begin{equation}
+y=X\beta+\epsilon
+\end{equation}
+
+\begin{tabular}{@{}ll@{}ll@{}}
+$E(y) = X\beta = \mu$ &  & $E(\epsilon)=0$  \\
+$Var(y) = \sigma^2 I_n $ & & $Var(\epsilon) = \sigma^2 I_n$ \\
+%y+X\hat{\beta} + e$ \\
+%%$E(y) = X\beta = \mu$ & Var\\
+% $\epsilon \sim N_p (0,\sigma^2I_n)$  & No \verb!\part! divisions. \\
+%\verb!article! & No \verb!\part! or \verb!\chapter! divisions. \\
+%\verb!letter!  & Letter (?). \\
+%\verb!slides!  & Large sans-serif font.
+\end{tabular}
+
+\begin{equation}
+y = X\hat{\beta} + e
+\end{equation}
+
+\begin{tabular}{@{}ll@{}ll@{}}
+Results for $\hat{\beta}$ & Results for $e$\\
+$E(\hat{\beta}) = \beta$ & $E(e) = 0$\\
+$Var(\hat{\beta}) = \sigma^2 (X^T X)^{-1} = \frac{\sigma^2}{S_{xx}}$ & $Var(e)=\sigma^2 M$  \\
+$\hat{\beta} \sim N_p(\beta,\sigma^2 (X^T X)^{-1})$ & $Var(e_i)=\sigma^2 m_{ii} $\\ 
+&  $E(e_i^2)= \sigma^2 m_{ii}$\\
+$\hat{\beta} = (X^T X)^{-1} X^T y$, $X$ has full rank  & $E(\sum e_i^2) = \sigma^2 (n-p)$\\
+\end{tabular}
+
+\medskip
+\textbf{Sum of Squares}:
+
+\begin{equation}
+S(\hat{\beta}) = \sum e_i^2 = e^T e = (y-X\hat{\beta})^T (y-X\hat{\beta})  = y^T y - y^T X \hat{\beta} = S_r
+\end{equation}
+
+\textbf{Estimation of error variance: $e=My$}
+
+\begin{equation}
+e = y - X\hat{\beta} = y - X (X^T X)^{-1} X^T y = My
+\end{equation}
+
+\noindent
+where
+
+\begin{equation}
+M = I_n -  X (X^T X)^{-1} X^T \quad \hbox{M is symmetric, idempotent } n\times n
+\end{equation}
+
+Note that $MX=0$, which means that 
+
+\begin{equation}
+E(e)=E(My) = ME(y)= MX\beta = 0
+\end{equation}
+
+Also, $Var(e) = Var(My) = M Var(y) M^T = \sigma^2 I_n M$.
+
+\medskip
+\textbf{Important properties of M}:
+
+\begin{itemize}
+\item $M$ is singular because every idempotent matrix except $I_n$ is singular.
+\item $trace(M)=rank(M)=n-p$.
+\end{itemize}
+
+\medskip
+
+
+\textbf{Residual mean square}:
+\begin{equation}
+\hat{\sigma}^2 = \frac{\sum e_i^ 2}{n-p} \quad E(\hat{\sigma}^2)=\sigma^2
+\end{equation}
+
+The square root of $\hat{\sigma}^2$, $\hat{\sigma}$ is the \textbf{residual standard error}.
+
+\subsection{Some short-cuts for hand-calculations}
+
+\begin{tabular}{@{}ll@{}}
+$S_{xx} = \sum (x_i - \bar{x})^2$  & $= \sum x_i^2 - n\bar{x}^2$ \\
+$S_{yy} = \sum (y_i - \bar{y})^2$ & $= \sum y_i^2 - n\bar{y}^2$\\ 
+$S_{xy} = \sum (x_i -\bar{x})(y_i -\bar{y})$ & = $\sum x_i y_i - n\bar{x}\bar{y}$\\
+\end{tabular}
+
+\begin{equation}
+\hat{\beta} = (X^T X)^{-1} X^T y = 
+\begin{pmatrix} 
+\bar{y} - \bar{x} \frac{S_{xy}}{S_{xx}}\\
+\frac{S_{xy}}{S_{xx}}
+\end{pmatrix}
+\end{equation}
+
+See \cite[25]{DraperSmith} for a full exposition.
+
+\subsection{Gauss-Markov conditions}
+
+This imposes distributional assumptions on $\epsilon = y - X \beta$.
+
+$E(\epsilon)=0$ and $Var(\epsilon)=\sigma^2 I_n$,
+
+\subsection{Gauss-Markov theorem}
+
+Let $a$ be any $p \times 1$ vector and suppose that $X$ has rank $p$. Of all estimators of $\theta = a^T \beta$ that are unbiased and linear functions of $y$, the estimator $\hat{\theta} = a^T \hat{\beta}$ has minimum variance. Note that $\theta$ is a scalar.
+
+Note: no normality assumption required! But if $\epsilon \sim N(0,\sigma^2)$, $\hat{\beta}$ have smaller variances than any other estimators.
+
+\subsection{Coefficient of determination}
+
+\begin{tabular}{@{}ll@{}}
+$S_{TOTAL} = (y-\bar{y})^T(y-\bar{y})$  $= y^T y - n\bar{y}^2$ & \\
+$S_{REG} = (X\hat{\beta}-\bar{y})^T (X\hat{\beta}-\bar{y})$ & \\
+$S_r = \sum e_i^2 = (y-X\hat{\beta})^T (y-X\hat{\beta})$ & \\
+\end{tabular}
+
+\begin{equation}
+S_{TOTAL} = S_{REG}+ S_r
+\end{equation}
+
+\begin{equation}
+R^2 = \frac{S_{TOTAL}-S_r}{S_{TOTAL}} = \frac{S_{REG}}{S_{TOTAL}}
+\end{equation}
+
+For $y = 1_n \beta_0 + \epsilon$, then $R^2 = \frac{S_{REG}}{S_{TOTAL}} = 0$ because $X\hat{\beta} = \bar{y}$. So $S_{REG} = (X\hat{\beta} - \bar{y})^T (X\hat{\beta} - \bar{y}) = 0$.
+
+In simple linear regression, $R^2 = r^2$.  $R^2$ is a generalization of $r^2$.
+
+Adjusted $R^2= R_{Adj}^2$.  $R_{Adj}^2= 1-\frac{S_r/(n-p)}{S_{TOTAL}/(n-1)}$. 
+
+$R^2$ increases with increasing numbers of explanatory variables, therefore $R_{Adj}^2$ is better. 
+
+
+\section{Hypothesis testing}
+
+\subsection{Some theoretical background}
+
+\textbf{Multivariate normal}:
+
+Let $X^T = < X_1,\dots,X_p>$, where $X_i$ are univariate random variables.
+
+X has a multivariate normal distribution if and only if every component of $X$ has a univariate normal distribution.
+
+
+\textbf{Linear transformations}:
+
+Let $A, b$ be constants. Then, $Ax + b\sim N_q (A\mu + b, A\Sigma A^T)$.
+
+\textbf{Standardization}:
+
+Note that $\Sigma$ is positive definite (it's a variance covariance matrix), so $\Sigma = CC^T$. 
+$C$ is like a square root (not necessarily unique).
+ 
+It follows ``immediately'' that 
+
+\begin{equation}
+C^{-1} (X-\mu) \sim N_p (0_p, I_p)
+\end{equation}
+
+If $\Sigma$ is a diagonal matrix, then $X_1,\dots,X_n$ are independent and uncorrelated.
+
+\textbf{Quadratic forms}:
+
+Recall distributional result: If we have $n$ independent standard normal random variables, their sum of squares is $\chi_n^2$.
+
+Lt $z = C^{-1} (X-\mu)$, and $\Sigma=CC^T$. The sum of squares $z^T z$ is:
+
+\begin{equation}
+\begin{split}
+z^T z & = [C^{-1} (X-\mu)]^T [C^{-1} (X-\mu)]\\
+& = (X-\mu)^T [C^{-1}]^T [C^{-1}](X-\mu) \quad \dots (AB)^T=B^T A^T\\
+\end{split}
+\end{equation} 
+
+Note that $ [C^{-1}]^T =  [C^{T}]^{-1}$. Therefore, 
+
+\begin{equation}
+\begin{split}
+[C^{-1}]^T [C^{-1}] & = [C^T]^{-1} [C^{-1}]\\
+& = (C^T C)^{-1}\\
+& = (C C^T)^{-1}\\
+& = \Sigma^{-1}\\
+\end{split}
+\end{equation} 
+
+Therefore: $z^T z = (X-\mu)^T  \Sigma^{-1} (X-\mu)\sim \chi_p^2$, where $p$ is the number of parameters.
+
+\textbf{Quadratic expressions involving idempotent matrices}
+
+Given a matrix $K$ that is idempotent, symmetric. Then:
+
+\begin{equation}
+x^T K x = x^T K^2 x = x^T K^T K x
+\end{equation}
+
+Let $x\sim N_n(\mu,\sigma^2 I_n)$, and let $K$ be a symmetric, idempotent $n \times n$ matrix such that $K\mu=0$. Let $r$ be the rank or trace of $K$. Then we have the \textbf{sum of squares property}:
+
+\begin{equation}
+x^T K x \sim \sigma^2 \chi_r^2
+\end{equation}
+
+The above generalizes the fact that if we have $n$ independent standard normal random variables, their sum of squares is $\chi_n^2$.
+
+Two points about the sum of squares property:
+\begin{itemize}
+\item
+Recall that the expectation of a chi-squared random variable is its degrees of freedom. It follows that:
+
+\begin{equation}
+E(x^T K x) =  \sigma^2 r 
+\end{equation}
+
+If $K\mu\neq 0$, $E(x^T K x) =  \sigma^2 r+\mu^T K\mu$. 
+
+\item If $K$ is idempotent, so is $I-K$. This allows us to split $x^T x$ into two components sums of squares:
+
+\begin{equation}
+x^T x = x^T K x+x^T (I-K) x
+\end{equation}
+\end{itemize}
+
+\textbf{Partition sum of squares}: 
+
+ Let $K_1, K_2,\dots, K_q$ be symmetric idempotent $n \times n$ matrices such that
+ $\sum K_i= I_n$ and $K_iK_j =0$, for all $i\neq j $. Let $x\sim N_n(\mu, \sigma^2)$.
+ Then we have the following partitioning into independent sums of squares:
+ 
+  \begin{equation}
+x^T x = \sum x^T K_i x
+\end{equation}
+
+If $K_i \mu = 0$, then $ x^T K_i x\sim \sigma^2 \chi_{r_i}^2$, where $r_i$ is the rank of $K_i$.
+
+\subsection{Confidence intervals for $\hat{\beta}$}
+
+Note that $\hat{\beta} \sim N_p (\beta,\sigma^2 (X^T X)^{-1})$, and that 
+$\frac{\hat{\sigma}^2}{\sigma^2} \sim  \frac{\chi^2_{n-p}}{n-p}$.
+
+From distributional theory we know that $T=\frac{X}{\sqrt{Y/v}}$, when $X\sim N(0,1)$ and $Y\sim \chi^2_{v}$. 
+
+Let 
+ $x_i$ be a column vector containing the values of the explanatory/regressor variables for a new observation $i$. Then if we define:
+
+\begin{equation}
+X=\frac{x_i^T \hat{\beta} - x_i^T \beta}{\sqrt{\sigma^2 x_i^T (X^T X)^{-1}x_i}} \sim N(0,1)
+\end{equation}
+
+\noindent
+and 
+
+\begin{equation}
+Y=\frac{\hat{\sigma}^2}{\sigma^2} \sim  \frac{\chi^2_{n-p}}{n-p}
+\end{equation}
+
+
+It follows that  $T=\frac{X}{\sqrt{Y/v}}$:
+
+\begin{equation}
+T=  \frac{x_i^T \hat{\beta} - x_i^T \beta}{\sqrt{\hat{\sigma}^2 x_i^T (X^T X)^{-1}x_i}} = 
+\frac{  \frac{x_i^T \hat{\beta} - x_i^T \beta}{\sqrt{\sigma^2 x_i^T (X^T X)^{-1}x_i}}}{\sqrt{\frac{\hat{\sigma}^2}{\sigma^2}}}
+ \sim t_{n-p}
+\end{equation}
+
+I.e., a 95\% CI:
+
+\begin{equation}
+x_i^T \hat{\beta} \pm t_{n-p,1-\alpha/2}\sqrt{\hat{\sigma}^2 x_i^T(X^T X)^{-1}x_i}
+\end{equation}
+
+Cf.\ a prediction interval:
+
+\begin{equation}
+x_i^T \hat{\beta} \pm t_{n-p,1-\alpha/2}\sqrt{\hat{\sigma}^2 (1+x_i^T(X^T X)^{-1}x_i)}
+\end{equation}
+
+Note that a prediction interval will be wider about the edges.
+
+\subsection{Distributions of estimators and residuals}
+
+Covar$(\hat{\beta},e)=0$: 
+
+         Var$\begin{pmatrix}
+	 \hat{\beta} \\
+	e \\
+	\end{pmatrix}
+	= 
+	\begin{pmatrix}
+	 Var(\hat{\beta}) & 0 \\
+	 0 & Var(e) \\
+	\end{pmatrix}
+	= 
+	\begin{pmatrix}
+	 \sigma^2 (X^T X)^{-1} & 0 \\
+	 0 & \sigma^2 M \\
+	\end{pmatrix}
+	$.
+	
+\textbf{Confidence intervals for components of $\beta$}	
+
+
+Let $G=(X^T X)^{-1}$, and $g_{ii}$ the $i$-th diagonal element. 
+
+\begin{equation}
+\hat{\beta}_i \sim N(\beta_i, \sigma^2 g_{ii})
+\end{equation}
+
+Since $\hat{\beta}$ and $S_r$ are independent, we have:
+
+\begin{equation}
+\frac{\hat{\beta}_i - \beta_i}{\hat{\sigma}\sqrt{g_{ii}}} \sim t_{n-p}
+\end{equation}
+
+The 95\% CI:
+
+
+\begin{equation}
+\hat{\beta}_i \pm t_{n-p,(1-\alpha)/2} \hat{\sigma} \sqrt{g_{ii}} 
+\end{equation}
+
+\subsection{Maximum likelihood estimators}
+
+to-do
+
+\subsection{Hypothesis testing}
+
+A general format for specifying null hypotheses: $H_0: C\beta = c$, where $C$ is a $q\times p$ matrix and $c$ is a $q\times 1$ vector of known constants. The matrix $C$ effectively asserts specific values for $q$ linear functions of $\beta$. In other words, it asserts $q$ null hypotheses stated in terms of (components of) the parameter vector $\beta$.
+
+ E.g., given:
+
+\begin{equation}
+y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2+\epsilon_i
+\end{equation}
+
+\noindent
+we can test $H_0: \beta_1=1, \beta_2=2$ by setting 
+
+$C=\begin{pmatrix} 
+0 & 1 & 0\\
+0 & 0 & 1\\
+\end{pmatrix}$
+and $c=\begin{pmatrix} 
+1\\
+2\\
+\end{pmatrix}$.
+
+The alternative is usually the negation of the null, i.e., $H_1: C\beta\neq c$, which means that at least one of the $q$ linear functions does not take its hypothesized value. 
+
+\textbf{Constructing a test}:
+
+\begin{equation}
+C\hat{\beta} \sim N_q (c,\sigma^2 C (X^T X)^{-1} C^T)
+\end{equation}
+
+So, if $H_0$ is true, by sum of squares property:
+
+\begin{equation}
+(C\hat{\beta} - c)^T C (X^T X)^{-1} C^T (C\hat{\beta} - c) \sim \sigma^2 \chi_q^2
+\end{equation}
+
+In other words:
+
+\begin{equation}
+\frac{(C\hat{\beta} - c)^T C (X^T X)^{-1} C^T (C\hat{\beta} - c)}{ \sigma^2} \sim \chi_q^2
+\end{equation}
+
+Note that $\hat{\beta}$ is independent of $\hat{\sigma}^2$, and recall that
+
+\begin{equation}
+\frac{\hat{\sigma}^2 }{\sigma^2} \sim \frac{\chi_{n-p}^2}{n-p}  \Leftrightarrow 
+\frac{\hat{\sigma}^2 (n-p)}{\sigma^2} \sim \chi_{n-p}^2
+\end{equation} 
+
+Recall distributional result: if $X\sim \chi_v^2, Y\sim \chi_w^2$ and $X,Y$ independent then $\frac{X/v}{Y/w}\sim F,v,w$.  
+
+
+It follows that if $H_0$ is true,  and setting
+$X=\frac{(C\hat{\beta} - c)^T C (X^T X)^{-1} C^T (C\hat{\beta} - c)}{ \sigma^2}$,
+$Y=\frac{\hat{\sigma}^2 (n-p)}{\sigma^2}$, and setting the degrees of freedom to $v=q$ and $w=n-p$:
+
+\begin{equation}
+\frac{X/v}{Y/w}=
+\frac{\frac{(C\hat{\beta} - c)^T C (X^T X)^{-1} C^T (C\hat{\beta} - c)}{ \sigma^2}/q}{\frac{\hat{\sigma}^2 (n-p)}{\sigma^2}/(n-p)}
+\end{equation}
+
+Simplifying:
+
+\begin{equation}
+\frac{(C\hat{\beta} - c)^T C (X^T X)^{-1} C^T (C\hat{\beta} - c)}{q\hat{\sigma}^2} \sim F_{q,n-p}
+\end{equation}
+
+%The above test is the \textbf{generalized likelihood ratio test}.
+
+This is a \textbf{one-sided test} even though the original alternative was two-sided.
+
+\textbf{Special cases of hypothesis tests}:
+
+When $q$ is 1, we have only one hypothesis to test, the $i$-th element of $\beta$. Given:
+
+\begin{equation}
+y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2+\epsilon_i
+\end{equation}
+
+\noindent
+we can test $H_0: \beta_1=0$ by setting 
+
+$C=\begin{pmatrix} 
+0 & 1 & 0\\
+\end{pmatrix}$
+and $c=0$.
+
+
+Using the fact that $X\sim t(v)\Leftrightarrow X^2 \sim F(1,v)$, we have
+
+
+\begin{equation}
+\frac{\hat{\beta}_i - c_i}{\hat{\sigma}\sqrt{g_{ii}}} \sim t_{n-p}
+\end{equation}
+ 
+ \subsection{Sum of squares}
+
+\begin{fmpage}{\linewidth}
+
+Recall:
+
+If $K$ is idempotent, so is $I-K$. This allows us to split $x^T x$ into two components sums of squares:
+
+\begin{equation}
+x^T x = x^T K x+x^T (I-K) x
+\end{equation}
+
+ Let $K_1, K_2,\dots, K_q$ be symmetric idempotent $n \times n$ matrices such that
+ $\sum K_i= I_n$ and $K_iK_j =0$, for all $i\neq j $. Let $x\sim N_n(\mu, \sigma^2)$.
+ Then we have the following partitioning into independent sums of squares:
+ 
+  \begin{equation}
+x^T x = \sum x^T K_i x
+\end{equation}
+
+If $K_i \mu = 0$, then $ x^T K_i x\sim \sigma^2 \chi_{r_i}^2$, where $r_i$ is the rank of $K_i$.
+\end{fmpage}
+
+We can use the sum of squares property just in case $K$ is idempotent, and $K\mu =0$ . Below, $K=M$ and $\mu=E(y)=X\beta$.
+
+Consider the sum of squares partition:
+
+\begin{equation}
+y^T y = \explain{\underline{y^T M y}}{S_r= e^T e} + \explain{\underline{y^T (I-M) y}}{\hat{\beta}^T (X^T X)\hat{\beta}}
+\end{equation}
+
+Note that the preconditions for sums of squares partitioning are satisfied:
+\begin{enumerate}
+\item $M$ is idempotent  (and symmetric), rank=trace=$n-p$.
+\item $I-M$ is idempotent (and symmetric), rank=trace=$p$.
+\item $ME(y) = 0$ because $ME(y)=MX\beta$ and $MX=0$.
+\end{enumerate}
+
+We can therefore partition the sum of squares into two independent sums of squares:
+
+\begin{equation}
+y^T y = \explain{\underline{y^T M y}}{e^T e \sim \sigma^2 \chi_{n-p}^2} \hbox{~~~~~~~~}+\hbox{~~~~~~~~} 
+\explain{\underline{y^T (I-M) y}}{ \sim \sigma^2 \chi_p^2 \newline \hbox{ iff } X\beta=0, i.e., \beta=0}
+\end{equation}
+
+So, iff we have $H_0: \beta=0$, we can partition sum of squares as above. Saying that $\beta=0$ is equivalent to saying that $X$ has rank $p$ and $X\beta=0$.
+
+\subsection{Testing the effect of a subset of regressor variables}
+
+Let:
+
+\begin{equation}
+C= (0_{p-q} I_q) \quad c=0, \hbox{ and } \beta=\begin{pmatrix} \beta_1\\ \beta_2 \end{pmatrix}
+\end{equation}
+
+
+Here, $\beta_{1,2}$ are vectors (sub-vectors?), not components of the $\beta$ vector.
+Then, $C\times \beta = \beta_2$ and $H_0: \beta_2=0$. Note that order of elements in $\beta$ is arbitrary; i.e., any subset of $\beta$ can be tested.
+
+Since  $C\times \beta = \beta_2$ and $c=0$, we can construct a sum of squares:
+
+\begin{equation}
+(C\hat{\beta} - c)^T C (X^T X)^{-1} C^T (C\hat{\beta} - c) \sim \sigma^2 \chi_q^2
+\end{equation}
+
+This becomes (since $C\beta=\hat{\beta}_2$):
+
+\begin{equation}
+\hat{\beta}_2^T C (X^T X)^{-1} C^T \hat{\beta}_2 \sim \sigma^2 \chi_q^2
+\end{equation}
+
+We can rewrite this as: $\hat{\beta}_2^T G_{qq} \hat{\beta}_2$, where $G_{qq}= C (X^T X)^{-1} C^T$ ($G_{qq}$ should not be confused with $g_{ii}$) is a $q\times q$ submatrix of $G=(X^T X)^{-1}$. 
+
+Note that $\hat{\beta}$ is independent of $\hat{\sigma}^2$, and 
+recall that  $\frac{\hat{\sigma}^2 (n-p)}{\sigma^2} \sim \chi_{n-p}^2$. We can now construct the F-test as before:
+
+\begin{equation}
+\frac{\hat{\beta}_2^T C (X^T X)^{-1} C^T \hat{\beta}_2}{q\hat{\sigma}^2} = 
+\frac{\hat{\beta}_2^T G \hat{\beta}_2}{q\hat{\sigma}^2}
+ \sim F_{q,n-p}
+\end{equation}
+
+
+\textbf{Sums of squares}:
+
+We can construct three idempotent matrices:
+
+\begin{itemize}
+\item
+$M = I_n - X(X^T X)^{-1} X^T$
+\item
+$M_1 =  X(X^T X)^{-1} X^T -   [X(X^T X)^{-1} C^T]  [\explain{\underline{C (X^T X)^{-1} C^T}}{G}]^{-1}  
+[C(X^T X)^{-1} X^T]$
+
+(that is: $M_1 =  X(X^T X)^{-1} X^T - M_2$)
+
+\item $M_2 = [X(X^T X)^{-1} C^T]  [\explain{\underline{C (X^T X)^{-1} C^T}}{G}]^{-1}  
+[C(X^T X)^{-1} X^T]$
+\end{itemize}
+
+Note that $M+M_1+M_2=I_n$ and $MM_1=MM_2=M_1M_2=0$. I.e., sum of squares partition property applies. We have three independent sums of squares:
+
+\begin{enumerate}
+\item $S_r = y^T M y$
+\item $S_1 = y^T M_1 y = \hat{\beta}^T X^T X \hat{\beta}-  \hat{\beta}_2^T G_{qq}^{-1} \hat{\beta}_2$
+\item $S_2 = y^T M_2 y =  \hat{\beta}_2^T G_{qq}^{-1} \hat{\beta}_2$
+\end{enumerate}
+
+So: $y^T y = S_r + S_1 + S_2$.  Then:
+
+\begin{itemize}
+\item It is unconditionally true that $S_r \sim \sigma^2 \chi^2_{n-p}$.
+\item If $H_0: \beta=0$ is true, then $E(\hat{\beta}_2) = \beta_2 = 0$. It follows from the sum of squares property that $S_2 \sim \sigma^2 \chi_q^2$.  
+\item Regarding $S_1$: 
+We can prove that $M_1 = X_1 (X_1^T X_1)^{-1}X_1^T$, where $X_1$ contains the first $p-q$ columns of $X$. It follows that:
+
+$S_1 = y^T M_1 y =y^T X_1 (X_1^T X_1)^{-1}X_1^T  y$
+
+Note that $X_1 (X_1^T X_1)^{-1}X_1^T$ is idempotent. If $\beta=0$, i.e., if $E(y) =X\beta = 0$, we can use the  sum of squares property and conclude that
+
+$S_1 \sim \sigma^2 \chi_{p-q}^2$
+
+The degrees of freedom are $p-q$ because the rank=trace of  $X_1 (X_1^T X_1)^{-1}X_1^T$ is $n-p$.
+
+\textbf{Thus, $S_1$ is testing $\beta_1=0$ but under the assumption that $\beta_2=0$}.
+
+\end{itemize}
+
+\textbf{Analysis of variance}
+
+%\begin{table}[htdp]
+%\caption{default}
+%\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+Sources & SS & df & MS & MS ratio\\
+ of variation & & & & \\
+\hline
+Due to $X_1$  & $S_1$ & $p-q$ & $S_1/(p-q)$ & $F_1$ \\
+if $\beta_2=0$   d& & & & $F_{p-q,n-p}$\\
+\hline
+Due to $X_2$ & $S_2$ & $q$ & $S_2/q$ & $F_2$\\
+& & & &  $F_{q,n-p}$\\
+\hline
+Residuals   & $S_r$ & $n-p$ & $\hat{\sigma}^2$ & \\
+\hline
+Total           & $y^T y$  & n &  &\\
+\hline
+\end{tabular}
+%\end{center}
+%\label{default}
+%\end{table}%
+
+Note:
+
+\begin{enumerate}
+\item 
+The ANOVA tests are \textbf{performed in order}:  First we test $H_0: \beta_2=0$. Then, if this test does not reject the null, we test $H_0: \beta_1 = 0$ \textbf{on the assumption (which may or may not be true)} that $\beta_2=0$. 
+\item What happens if we reject the first hypothesis?
+\end{enumerate}
+
+\textbf{The null or minimal model (constant term)}
+
+We can set $C=I_p$ and $c=0$. This tests whether all coefficients are zero. But this states that $E(y)=0$, whereas it should have a non-zero value (e.g., reading times).  We include the constant term to accommodate this desire to have $E(y)=\mu=\neq 0$. In matrix format: let $\beta$ be the parameter vector; then, $\beta_1=\mu$ is the first, constant, term, and the rest of the parameters are the vector $\beta_2$ ($p-1\times 1$).
+The first column of $X$ will be $X_1=1_n$.
+
+\begin{enumerate}
+\item
+$S_1=y^T (X_1^T X_1)^{-1} X_1^T y = (\sum y)^2/n = n\bar{y}^2$
+\item
+$S_r = y^Ty - \hat{\beta}^T X^T X\hat{\beta}$
+\item
+$S_2 = y^T y -S_1 - S_r = \hat{\beta}^T X^T X\hat{\beta}-n\bar{y}^2$
+\end{enumerate}
+
+It is normal to omit the row in the ANOVA table corresponding to the constant term.
+
+\medskip
+\textbf{Testing whether all predictors (besides the constant term) are zero}
+
+To test whether $p$ predictor variables have any effect on $y$,we set $q=p-1$, and our anova table looks like this:
+
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+Sources & SS & df & MS & MS \\
+of variation  & & & & ratio \\
+\hline
+%Due to $X_1$ if $\beta_2=0$ & $S_1$ & $p-q$ & $S_1/(p-q)$ & ($F_1$) $  F_{p-q,n-p}$\\
+%\hline
+Due & $S_2$ & $p-1$ & $\frac{S_2}{(p-1)}$ & $F_2$\\
+ to regressors & & & &  $F_{p-1,n-p}$\\
+\hline
+Residuals   & $S_r$ & $n-p$ & $\hat{\sigma}^2$ & \\
+\hline
+Total        & $S_{yy}=$  & n-1 &  &\\
+ (\textbf{adjusted})    & $(y-\bar{y})^T(y-\bar{y})$ & & & \\
+& $=y^T y - n\bar{y}^2$ & & & \\
+\hline
+\end{tabular}
+
+Note that $S_{yy}=\sum (y_i - \bar{y})^2$ is the residual sum of squares that we get after fitting the constant $\hat{\mu}=\bar{y}$.
+
+\medskip
+\textbf{Testing a subset of predictors $\beta_2$}
+
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+Sources & SS & df & MS & MS \\
+of variation  & & & & ratio \\
+\hline
+Due to $X_1$   & $S_1$ & $p-q-1$ & $\frac{S_1}{(p-q-1)}$ & ($F_1$) \\
+if $\beta_2=0$ & & & & $F_{p-q-1,n-p}$\\
+(test of $\beta_1$) & & & & \\
+\hline
+Due & $S_2$ & $q$ & $\frac{S_2}{q}$ & $F_2$\\
+ to $X_2$ & & & &  $F_{q,n-p}$\\
+(test of $\beta_2$) & & & & \\
+\hline
+Residuals   & $S_r$ & $n-p$ & $\hat{\sigma}^2$ & \\
+\hline
+Total        & $S_{yy}$  & n-1 &  &\\
+\hline
+\end{tabular}
+Note: the lecture notes have total SS as $y^T y$ but I think that's a typo.
+
+%Used at the very beginning of a document:
+%\verb!\documentclass{!\textit{class}\verb!}!.  Use
+%\verb!\begin{document}! to start contents and \verb!\end{document}! to
+%end the document.
+
+
+
+
+\bibliographystyle{plain}
+\bibliography{/Users/shravanvasishth/Dropbox/Bibliography/bibcleaned}
+
+Cheat sheet template taken from Winston Chang: http://www.stdout.org/$\sim$winston/latex/
+
+
+
+\end{multicols}
+\end{document}
+
+
+\subsection{Common \texttt{documentclass} options}
+\newlength{\MyLen}
+\settowidth{\MyLen}{\texttt{letterpaper}/\texttt{a4paper} \ }
+\begin{tabular}{@{}p{\the\MyLen}%
+                @{}p{\linewidth-\the\MyLen}@{}}
+\texttt{10pt}/\texttt{11pt}/\texttt{12pt} & Font size. \\
+\texttt{letterpaper}/\texttt{a4paper} & Paper size. \\
+\texttt{twocolumn} & Use two columns. \\
+\texttt{twoside}   & Set margins for two-sided. \\
+\texttt{landscape} & Landscape orientation.  Must use
+                     \texttt{dvips -t landscape}. \\
+\texttt{draft}     & Double-space lines.
+\end{tabular}
+
+Usage:
+\verb!\documentclass[!\textit{opt,opt}\verb!]{!\textit{class}\verb!}!.
+
+
+\subsection{Packages}
+\settowidth{\MyLen}{\texttt{multicol} }
+\begin{tabular}{@{}p{\the\MyLen}%
+                @{}p{\linewidth-\the\MyLen}@{}}
+%\begin{tabular}{@{}ll@{}}
+\texttt{fullpage}  &  Use 1 inch margins. \\
+\texttt{anysize}   &  Set margins: \verb!\marginsize{!\textit{l}%
+                        \verb!}{!\textit{r}\verb!}{!\textit{t}%
+                        \verb!}{!\textit{b}\verb!}!.            \\
+\texttt{multicol}  &  Use $n$ columns: 
+                        \verb!\begin{multicols}{!$n$\verb!}!.   \\
+\texttt{latexsym}  &  Use \LaTeX\ symbol font. \\
+\texttt{graphicx}  &  Show image:
+                        \verb!\includegraphics[width=!%
+                        \textit{x}\verb!]{!%
+                        \textit{file}\verb!}!. \\
+\texttt{url}       & Insert URL: \verb!\url{!%
+                        \textit{http://\ldots}%
+                        \verb!}!.
+\end{tabular}
+
+Use before \verb!\begin{document}!. 
+Usage: \verb!\usepackage{!\textit{package}\verb!}!
+
+
+\subsection{Title}
+\settowidth{\MyLen}{\texttt{.author.text.} }
+\begin{tabular}{@{}p{\the\MyLen}%
+                @{}p{\linewidth-\the\MyLen}@{}}
+\verb!\author{!\textit{text}\verb!}! & Author of document. \\
+\verb!\title{!\textit{text}\verb!}!  & Title of document. \\
+\verb!\date{!\textit{text}\verb!}!   & Date. \\
+\end{tabular}
+
+These commands go before \verb!\begin{document}!.  The declaration
+\verb!\maketitle! goes at the top of the document.
+
+\subsection{Miscellaneous}
+\settowidth{\MyLen}{\texttt{.pagestyle.empty.} }
+\begin{tabular}{@{}p{\the\MyLen}%
+                @{}p{\linewidth-\the\MyLen}@{}}
+\verb!\pagestyle{empty}!     &   Empty header, footer
+                                 and no page numbers. \\
+\verb!\tableofcontents!      &   Add a table of contents here. \\
+
+\end{tabular}
+
+
+
+\section{Document structure}
+\begin{multicols}{2}
+\verb!\part{!\textit{title}\verb!}!  \\
+\verb!\chapter{!\textit{title}\verb!}!  \\
+\verb!\section{!\textit{title}\verb!}!  \\
+\verb!\subsection{!\textit{title}\verb!}!  \\
+\verb!\subsubsection{!\textit{title}\verb!}!  \\
+\verb!\paragraph{!\textit{title}\verb!}!  \\
+\verb!\subparagraph{!\textit{title}\verb!}!
+\end{multicols}
+{\raggedright
+Use \verb!\setcounter{secnumdepth}{!$x$\verb!}! suppresses heading
+numbers of depth $>x$, where \verb!chapter! has depth 0.
+Use a \texttt{*}, as in \verb!\section*{!\textit{title}\verb!}!,
+to not number a particular item---these items will also not appear
+in the table of contents.
+}
+
+\subsection{Text environments}
+\settowidth{\MyLen}{\texttt{.begin.quotation.}}
+\begin{tabular}{@{}p{\the\MyLen}%
+                @{}p{\linewidth-\the\MyLen}@{}}
+\verb!\begin{comment}!    &  Comment (not printed). Requires \texttt{verbatim} package. \\
+\verb!\begin{quote}!      &  Indented quotation block. \\
+\verb!\begin{quotation}!  &  Like \texttt{quote} with indented paragraphs. \\
+\verb!\begin{verse}!      &  Quotation block for verse.
+\end{tabular}
+
+\subsection{Lists}
+\settowidth{\MyLen}{\texttt{.begin.description.}}
+\begin{tabular}{@{}p{\the\MyLen}%
+                @{}p{\linewidth-\the\MyLen}@{}}
+\verb!\begin{enumerate}!        &  Numbered list. \\
+\verb!\begin{itemize}!          &  Bulleted list. \\
+\verb!\begin{description}!      &  Description list. \\
+\verb!\item! \textit{text}      &  Add an item. \\
+\verb!\item[!\textit{x}\verb!]! \textit{text}
+                                &  Use \textit{x} instead of normal
+                        bullet or number.  Required for descriptions. \\
+\end{tabular}
+
+
+
+
+\subsection{References}
+\settowidth{\MyLen}{\texttt{.pageref.marker..}}
+\begin{tabular}{@{}p{\the\MyLen}%
+                @{}p{\linewidth-\the\MyLen}@{}}
+\verb!\label{!\textit{marker}\verb!}!   &  Set a marker for cross-reference, 
+                          often of the form \verb!\label{sec:item}!. \\
+\verb!\ref{!\textit{marker}\verb!}!   &  Give section/body number of marker. \\
+\verb!\pageref{!\textit{marker}\verb!}! &  Give page number of marker. \\
+\verb!\footnote{!\textit{text}\verb!}!  &  Print footnote at bottom of page. \\
+\end{tabular}
+
+
+\subsection{Floating bodies}
+\settowidth{\MyLen}{\texttt{.begin.equation..place.}}
+\begin{tabular}{@{}p{\the\MyLen}%
+                @{}p{\linewidth-\the\MyLen}@{}}
+\verb!\begin{table}[!\textit{place}\verb!]!     &  Add numbered table. \\
+\verb!\begin{figure}[!\textit{place}\verb!]!    &  Add numbered figure. \\
+\verb!\begin{equation}[!\textit{place}\verb!]!  &  Add numbered equation. \\
+\verb!\caption{!\textit{text}\verb!}!           &  Caption for the body. \\
+\end{tabular}
+
+The \textit{place} is a list valid placements for the body.  \texttt{t}=top,
+\texttt{h}=here, \texttt{b}=bottom, \texttt{p}=separate page, \texttt{!}=place even if ugly.  Captions and label markers should be within the environment.
+
+%---------------------------------------------------------------------------
+
+\section{Text properties}
+
+\subsection{Font face}
+\newcommand{\FontCmd}[3]{\PBS\verb!\#1{!\textit{text}\verb!}!  \> %
+                         \verb!{\#2 !\textit{text}\verb!}! \> %
+                         \#1{#3}}
+\begin{tabular}{@{}l@{}l@{}l@{}}
+\textit{Command} & \textit{Declaration} & \textit{Effect} \\
+\verb!\textrm{!\textit{text}\verb!}!                    & %
+        \verb!{\rmfamily !\textit{text}\verb!}!               & %
+        \textrm{Roman family} \\
+\verb!\textsf{!\textit{text}\verb!}!                    & %
+        \verb!{\sffamily !\textit{text}\verb!}!               & %
+        \textsf{Sans serif family} \\
+\verb!\texttt{!\textit{text}\verb!}!                    & %
+        \verb!{\ttfamily !\textit{text}\verb!}!               & %
+        \texttt{Typewriter family} \\
+\verb!\textmd{!\textit{text}\verb!}!                    & %
+        \verb!{\mdseries !\textit{text}\verb!}!               & %
+        \textmd{Medium series} \\
+\verb!\textbf{!\textit{text}\verb!}!                    & %
+        \verb!{\bfseries !\textit{text}\verb!}!               & %
+        \textbf{Bold series} \\
+\verb!\textup{!\textit{text}\verb!}!                    & %
+        \verb!{\upshape !\textit{text}\verb!}!               & %
+        \textup{Upright shape} \\
+\verb!\textit{!\textit{text}\verb!}!                    & %
+        \verb!{\itshape !\textit{text}\verb!}!               & %
+        \textit{Italic shape} \\
+\verb!\textsl{!\textit{text}\verb!}!                    & %
+        \verb!{\slshape !\textit{text}\verb!}!               & %
+        \textsl{Slanted shape} \\
+\verb!\textsc{!\textit{text}\verb!}!                    & %
+        \verb!{\scshape !\textit{text}\verb!}!               & %
+        \textsc{Small Caps shape} \\
+\verb!\emph{!\textit{text}\verb!}!                      & %
+        \verb!{\em !\textit{text}\verb!}!               & %
+        \emph{Emphasized} \\
+\verb!\textnormal{!\textit{text}\verb!}!                & %
+        \verb!{\normalfont !\textit{text}\verb!}!       & %
+        \textnormal{Document font} \\
+\verb!\underline{!\textit{text}\verb!}!                 & %
+                                                        & %
+        \underline{Underline}
+\end{tabular}
+
+The command (t\textit{tt}t) form handles spacing better than the
+declaration (t{\itshape tt}t) form.
+
+\subsection{Font size}
+\setlength{\columnsep}{14pt} % Need to move columns apart a little
+\begin{multicols}{2}
+\begin{tabbing}
+\verb!\footnotesize!          \= \kill
+\verb!\tiny!                  \>  \tiny{tiny} \\
+\verb!\scriptsize!            \>  \scriptsize{scriptsize} \\
+\verb!\footnotesize!          \>  \footnotesize{footnotesize} \\
+\verb!\small!                 \>  \small{small} \\
+\verb!\normalsize!            \>  \normalsize{normalsize} \\
+\verb!\large!                 \>  \large{large} \\
+\verb!\Large!                 \=  \Large{Large} \\  % Tab hack for new column
+\verb!\LARGE!                 \>  \LARGE{LARGE} \\
+\verb!\huge!                  \>  \huge{huge} \\
+\verb!\Huge!                  \>  \Huge{Huge}
+\end{tabbing}
+\end{multicols}
+\setlength{\columnsep}{1pt} % Set column separation back
+
+These are declarations and should be used in the form
+\verb!{\small! \ldots\verb!}!, or without braces to affect the entire
+document.
+
+
+\subsection{Verbatim text}
+
+\settowidth{\MyLen}{\texttt{.begin.verbatim..} }
+\begin{tabular}{@{}p{\the\MyLen}%
+                @{}p{\linewidth-\the\MyLen}@{}}
+\verb@\begin{verbatim}@ & Verbatim environment. \\
+\verb@\begin{verbatim*}@ & Spaces are shown as \verb*@ @. \\
+\verb@\verb!text!@ & Text between the delimiting characters (in this case %
+                      `\texttt{!}') is verbatim.
+\end{tabular}
+
+
+\subsection{Justification}
+\begin{tabular}{@{}ll@{}}
+\textit{Environment}  &  \textit{Declaration}  \\
+\verb!\begin{center}!      & \verb!\centering!  \\
+\verb!\begin{flushleft}!  & \verb!\raggedright! \\
+\verb!\begin{flushright}! & \verb!\raggedleft!  \\
+\end{tabular}
+
+\subsection{Miscellaneous}
+\verb!\linespread{!$x$\verb!}! changes the line spacing by the
+multiplier $x$.
+
+
+
+
+
+\section{Text-mode symbols}
+
+\subsection{Symbols}
+\begin{tabular}{@{}l@{\hspace{1em}}l@{\hspace{2em}}l@{\hspace{1em}}l@{\hspace{2em}}l@{\hspace{1em}}l@{\hspace{2em}}l@{\hspace{1em}}l@{}}
+\&              &  \verb!\&! &
+\_              &  \verb!\_! &
+\ldots          &  \verb!\ldots! &
+\textbullet     &  \verb!\textbullet! \\
+\$              &  \verb!\$! &
+\^{}            &  \verb!\^{}! &
+\textbar        &  \verb!\textbar! &
+\textbackslash  &  \verb!\textbackslash! \\
+\%              &  \verb!\%! &
+\~{}            &  \verb!\~{}! &
+\#              &  \verb!\#! &
+\S              &  \verb!\S! \\
+\end{tabular}
+
+\subsection{Accents}
+\begin{tabular}{@{}l@{\ }l|l@{\ }l|l@{\ }l|l@{\ }l|l@{\ }l@{}}
+\`o   & \verb!\`o! &
+\'o   & \verb!\'o! &
+\^o   & \verb!\^o! &
+\~o   & \verb!\~o! &
+\=o   & \verb!\=o! \\
+\.o   & \verb!\.o! &
+\"o   & \verb!\"o! &
+\c o  & \verb!\c o! &
+\v o  & \verb!\v o! &
+\H o  & \verb!\H o! \\
+\c c  & \verb!\c c! &
+\d o  & \verb!\d o! &
+\b o  & \verb!\b o! &
+\t oo & \verb!\t oo! &
+\oe   & \verb!\oe! \\
+\OE   & \verb!\OE! &
+\ae   & \verb!\ae! &
+\AE   & \verb!\AE! &
+\aa   & \verb!\aa! &
+\AA   & \verb!\AA! \\
+\o    & \verb!\o! &
+\O    & \verb!\O! &
+\l    & \verb!\l! &
+\L    & \verb!\L! &
+\i    & \verb!\i! \\
+\j    & \verb!\j! &
+!`    & \verb!~`! &
+?`    & \verb!?`! &
+\end{tabular}
+
+
+\subsection{Delimiters}
+\begin{tabular}{@{}l@{\ }ll@{\ }ll@{\ }ll@{\ }ll@{\ }ll@{\ }l@{}}
+`       & \verb!`!  &
+``      & \verb!``! &
+\{      & \verb!\{! &
+\lbrack & \verb![! &
+(       & \verb!(! &
+\textless  &  \verb!\textless! \\
+'       & \verb!'!  &
+''      & \verb!''! &
+\}      & \verb!\}! &
+\rbrack & \verb!]! &
+)       & \verb!)! &
+\textgreater  &  \verb!\textgreater! \\
+\end{tabular}
+
+\subsection{Dashes}
+\begin{tabular}{@{}llll@{}}
+\textit{Name} & \textit{Source} & \textit{Example} & \textit{Usage} \\
+hyphen  & \verb!-!   & X-ray          & In words. \\
+en-dash & \verb!--!  & 1--5           & Between numbers. \\
+em-dash & \verb!---! & Yes---or no?    & Punctuation.
+\end{tabular}
+
+
+\subsection{Line and page breaks}
+\settowidth{\MyLen}{\texttt{.pagebreak} }
+\begin{tabular}{@{}p{\the\MyLen}%
+                @{}p{\linewidth-\the\MyLen}@{}}
+\verb!\\!          &  Begin new line without new paragraph.  \\
+\verb!\\*!         &  Prohibit pagebreak after linebreak. \\
+\verb!\kill!       &  Don't print current line. \\
+\verb!\pagebreak!  &  Start new page. \\
+\verb!\noindent!   &  Do not indent current line.
+\end{tabular}
+
+
+\subsection{Miscellaneous}
+\settowidth{\MyLen}{\texttt{.rule.w..h.} }
+\begin{tabular}{@{}p{\the\MyLen}%
+                @{}p{\linewidth-\the\MyLen}@{}}
+\verb!\today!  &  \today. \\
+\verb!$\sim$!  &  Prints $\sim$ instead of \verb!\~{}!, which makes \~{}. \\
+\verb!~!       &  Space, disallow linebreak (\verb!W.J.~Clinton!). \\
+\verb!\@.!     &  Indicate that the \verb!.! ends a sentence when following
+                        an uppercase letter. \\
+\verb!\hspace{!$l$\verb!}! & Horizontal space of length $l$
+                                (Ex: $l=\mathtt{20pt}$). \\
+\verb!\vspace{!$l$\verb!}! & Vertical space of length $l$. \\
+\verb!\rule{!$w$\verb!}{!$h$\verb!}! & Line of width $w$ and height $h$. \\
+\end{tabular}
+
+
+
+\section{Tabular environments}
+
+\subsection{\texttt{tabbing} environment}
+\begin{tabular}{@{}l@{\hspace{1.5ex}}l@{\hspace{10ex}}l@{\hspace{1.5ex}}l@{}}
+\verb!\=!  &   Set tab stop. &
+\verb!\>!  &   Go to tab stop.
+\end{tabular}
+
+Tab stops can be set on ``invisible'' lines with \verb!\kill!
+at the end of the line.  Normally \verb!\\! is used to separate lines.
+
+
+\subsection{\texttt{tabular} environment}
+\verb!\begin{array}[!\textit{pos}\verb!]{!\textit{cols}\verb!}!   \\
+\verb!\begin{tabular}[!\textit{pos}\verb!]{!\textit{cols}\verb!}! \\
+\verb!\begin{tabular*}{!\textit{width}\verb!}[!\textit{pos}\verb!]{!\textit{cols}\verb!}!
+
+
+\subsubsection{\texttt{tabular} column specification}
+\settowidth{\MyLen}{\texttt{p}\{\textit{width}\} \ }
+\begin{tabular}{@{}p{\the\MyLen}@{}p{\linewidth-\the\MyLen}@{}}
+\texttt{l}    &   Left-justified column.  \\
+\texttt{c}    &   Centered column.  \\
+\texttt{r}    &   Right-justified column. \\
+\verb!p{!\textit{width}\verb!}!  &  Same as %
+                              \verb!\parbox[t]{!\textit{width}\verb!}!. \\ 
+\verb!@{!\textit{decl}\verb!}!   &  Insert \textit{decl} instead of
+                                    inter-column space. \\
+\verb!|!      &   Inserts a vertical line between columns. 
+\end{tabular}
+
+
+\subsubsection{\texttt{tabular} elements}
+\settowidth{\MyLen}{\texttt{.cline.x-y..}}
+\begin{tabular}{@{}p{\the\MyLen}@{}p{\linewidth-\the\MyLen}@{}}
+\verb!\hline!           &  Horizontal line between rows.  \\
+\verb!\cline{!$x$\verb!-!$y$\verb!}!  &
+                        Horizontal line across columns $x$ through $y$. \\
+\verb!\multicolumn{!\textit{n}\verb!}{!\textit{cols}\verb!}{!\textit{text}\verb!}! \\
+        &  A cell that spans \textit{n} columns, with \textit{cols} column specification.
+\end{tabular}
+
+\section{Math mode}
+For inline math, use \verb!\(...\)! or \verb!$...$!.
+For displayed math, use \verb!\[...\]! or \verb!\begin{equation}!.
+
+\begin{tabular}{@{}l@{\hspace{1em}}l@{\hspace{2em}}l@{\hspace{1em}}l@{}}
+Superscript$^{x}$       &
+\verb!^{x}!             &  
+Subscript$_{x}$         &
+\verb!_{x}!             \\  
+$\frac{x}{y}$           &
+\verb!\frac{x}{y}!      &  
+$\sum_{k=1}^n$          &
+\verb!\sum_{k=1}^n!     \\  
+$\sqrt[n]{x}$           &
+\verb!\sqrt[n]{x}!      &  
+$\prod_{k=1}^n$         &
+\verb!\prod_{k=1}^n!    \\ 
+\end{tabular}
+
+\subsection{Math-mode symbols}
+
+% The ordering of these symbols is slightly odd.  This is because I had to put all the
+% long pieces of text in the same column (the right) for it all to fit properly.
+% Otherwise, it wouldn't be possible to fit four columns of symbols here.
+
+\begin{tabular}{@{}l@{\hspace{1ex}}l@{\hspace{1em}}l@{\hspace{1ex}}l@{\hspace{1em}}l@{\hspace{1ex}} l@{\hspace{1em}}l@{\hspace{1ex}}l@{}}
+$\leq$          &  \verb!\leq!  &
+$\geq$          &  \verb!\geq!  &
+$\neq$          &  \verb!\neq!  &
+$\approx$       &  \verb!\approx!  \\
+$\times$        &  \verb!\times!  &
+$\div$          &  \verb!\div!  &
+$\pm$           & \verb!\pm!  &
+$\cdot$         &  \verb!\cdot!  \\
+$^{\circ}$      & \verb!^{\circ}! &
+$\circ$         &  \verb!\circ!  &
+$\prime$        & \verb!\prime!  &
+$\cdots$        &  \verb!\cdots!  \\
+$\infty$        & \verb!\infty!  &
+$\neg$          & \verb!\neg!  &
+$\wedge$        & \verb!\wedge!  &
+$\vee$          & \verb!\vee!  \\
+$\supset$       & \verb!\supset!  &
+$\forall$       & \verb!\forall!  &
+$\in$           & \verb!\in!  &
+$\rightarrow$   &  \verb!\rightarrow! \\
+$\subset$       & \verb!\subset!  &
+$\exists$       & \verb!\exists!  &
+$\notin$        & \verb!\notin!  &
+$\Rightarrow$   &  \verb!\Rightarrow! \\
+$\cup$          & \verb!\cup!  &
+$\cap$          & \verb!\cap!  &
+$\mid$          & \verb!\mid!  &
+$\Leftrightarrow$   &  \verb!\Leftrightarrow! \\
+$\dot a$        & \verb!\dot a!  &
+$\hat a$        & \verb!\hat a!  &
+$\bar a$        & \verb!\bar a!  &
+$\tilde a$      & \verb!\tilde a!  \\
+
+$\alpha$        &  \verb!\alpha!  &
+$\beta$         &  \verb!\beta!  &
+$\gamma$        &  \verb!\gamma!  &
+$\delta$        &  \verb!\delta!  \\
+$\epsilon$      &  \verb!\epsilon!  &
+$\zeta$         &  \verb!\zeta!  &
+$\eta$          &  \verb!\eta!  &
+$\varepsilon$   &  \verb!\varepsilon!  \\
+$\theta$        &  \verb!\theta!  &
+$\iota$         &  \verb!\iota!  &
+$\kappa$        &  \verb!\kappa!  &
+$\vartheta$     &  \verb!\vartheta!  \\
+$\lambda$       &  \verb!\lambda!  &
+$\mu$           &  \verb!\mu!  &
+$\nu$           &  \verb!\nu!  &
+$\xi$           &  \verb!\xi!  \\
+$\pi$           &  \verb!\pi!  &
+$\rho$          &  \verb!\rho!  &
+$\sigma$        &  \verb!\sigma!  &
+$\tau$          &  \verb!\tau!  \\
+$\upsilon$      &  \verb!\upsilon!  &
+$\phi$          &  \verb!\phi!  &
+$\chi$          &  \verb!\chi!  &
+$\psi$          &  \verb!\psi!  \\
+$\omega$        &  \verb!\omega!  &
+$\Gamma$        &  \verb!\Gamma!  &
+$\Delta$        &  \verb!\Delta!  &
+$\Theta$        &  \verb!\Theta!  \\
+$\Lambda$       &  \verb!\Lambda!  &
+$\Xi$           &  \verb!\Xi!  &
+$\Pi$           &  \verb!\Pi!  &
+$\Sigma$        &  \verb!\Sigma!  \\
+$\Upsilon$      &  \verb!\Upsilon!  &
+$\Phi$          &  \verb!\Phi!  &
+$\Psi$          &  \verb!\Psi!  &
+$\Omega$        &  \verb!\Omega!  
+\end{tabular}
+\footnotesize
+
+%\subsection{Special symbols}
+%\begin{tabular}{@{}ll@{}}
+%$^{\circ}$  &  \verb!^{\circ}! Ex: $22^{\circ}\mathrm{C}$: \verb!$22^{\circ}\mathrm{C}$!.
+%\end{tabular}
+
+\section{Bibliography and citations}
+When using \BibTeX, you need to run \texttt{latex}, \texttt{bibtex},
+and \texttt{latex} twice more to resolve dependencies.
+
+\subsection{Citation types}
+\settowidth{\MyLen}{\texttt{.shortciteN.key..}}
+\begin{tabular}{@{}p{\the\MyLen}@{}p{\linewidth-\the\MyLen}@{}}
+\verb!\cite{!\textit{key}\verb!}!       &
+        Full author list and year. (Watson and Crick 1953) \\
+\verb!\citeA{!\textit{key}\verb!}!      &
+        Full author list. (Watson and Crick) \\
+\verb!\citeN{!\textit{key}\verb!}!      &
+        Full author list and year. Watson and Crick (1953) \\
+\verb!\shortcite{!\textit{key}\verb!}!  &
+        Abbreviated author list and year. ? \\
+\verb!\shortciteA{!\textit{key}\verb!}! &
+        Abbreviated author list. ? \\
+\verb!\shortciteN{!\textit{key}\verb!}! &
+        Abbreviated author list and year. ? \\
+\verb!\citeyear{!\textit{key}\verb!}!   &
+        Cite year only. (1953) \\
+\end{tabular}
+
+All the above have an \texttt{NP} variant without parentheses;
+Ex. \verb!\citeNP!.
+
+
+\subsection{\BibTeX\ entry types}
+\settowidth{\MyLen}{\texttt{.mastersthesis.}}
+\begin{tabular}{@{}p{\the\MyLen}@{}p{\linewidth-\the\MyLen}@{}}
+\verb!@article!         &  Journal or magazine article. \\
+\verb!@book!            &  Book with publisher. \\
+\verb!@booklet!         &  Book without publisher. \\
+\verb!@conference!      &  Article in conference proceedings. \\
+\verb!@inbook!          &  A part of a book and/or range of pages. \\
+\verb!@incollection!    &  A part of book with its own title. \\
+%\verb!@manual!          &  Technical documentation. \\
+%\verb!@mastersthesis!   &  Master's thesis. \\
+\verb!@misc!            &  If nothing else fits. \\
+\verb!@phdthesis!       &  PhD. thesis. \\
+\verb!@proceedings!     &  Proceedings of a conference. \\
+\verb!@techreport!      &  Tech report, usually numbered in series. \\
+\verb!@unpublished!     &  Unpublished. \\
+\end{tabular}
+
+\subsection{\BibTeX\ fields}
+\settowidth{\MyLen}{\texttt{organization.}}
+\begin{tabular}{@{}p{\the\MyLen}@{}p{\linewidth-\the\MyLen}@{}}
+\verb!address!         &  Address of publisher.  Not necessary for major
+                                publishers.  \\
+\verb!author!           &  Names of authors, of format .... \\
+\verb!booktitle!        &  Title of book when part of it is cited. \\
+\verb!chapter!          &  Chapter or section number. \\
+\verb!edition!          &  Edition of a book. \\
+\verb!editor!           &  Names of editors. \\
+\verb!institution!      &  Sponsoring institution of tech.\ report. \\
+\verb!journal!          &  Journal name. \\
+\verb!key!              &  Used for cross ref.\ when no author. \\
+\verb!month!            &  Month published. Use 3-letter abbreviation. \\
+\verb!note!             &  Any additional information. \\
+\verb!number!           &  Number of journal or magazine. \\
+\verb!organization!     &  Organization that sponsors a conference. \\
+\verb!pages!            &  Page range (\verb!2,6,9--12!). \\
+\verb!publisher!        &  Publisher's name. \\
+\verb!school!           &  Name of school (for thesis). \\
+\verb!series!           &  Name of series of books. \\
+\verb!title!            &  Title of work. \\
+\verb!type!             &  Type of tech.\ report, ex. ``Research Note''. \\
+\verb!volume!           &  Volume of a journal or book. \\
+\verb!year!             &  Year of publication. \\
+\end{tabular}
+Not all fields need to be filled.  See example below.
+
+\subsection{Common \BibTeX\ style files}
+\begin{tabular}{@{}l@{\hspace{1em}}l@{\hspace{3em}}l@{\hspace{1em}}l@{}}
+\verb!abbrv!    &  Standard &
+\verb!abstract! &  \texttt{alpha} with abstract \\
+\verb!alpha!    &  Standard &
+\verb!apa!      &  APA \\
+\verb!plain!    &  Standard &
+\verb!unsrt!    &  Unsorted \\
+\end{tabular}
+
+The \LaTeX\ document should have the following two lines just before
+\verb!\end{document}!, where \verb!bibfile.bib! is the name of the
+\BibTeX\ file.
+\begin{verbatim}
+\bibliographystyle{plain}
+\bibliography{bibfile}
+\end{verbatim}
+
+\subsection{\BibTeX\ example}
+The \BibTeX\ database goes in a file called
+\textit{file}\texttt{.bib}, which is processed with \verb!bibtex file!. 
+\begin{verbatim}
+@String{N = {Na\-ture}}
+@Article{WC:1953,
+  author  = {James Watson and Francis Crick},
+  title   = {A structure for Deoxyribose Nucleic Acid},
+  journal = N,
+  volume  = {171},
+  pages   = {737},
+  year    = 1953
+}
+\end{verbatim}
+
+
+\section{Sample \LaTeX\ document}
+\begin{verbatim}
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\title{Template}
+\author{Name}
+\begin{document}
+\maketitle
+
+\section{section}
+\subsection*{subsection without number}
+text \textbf{bold text} text. Some math: $2+2=5$
+\subsection{subsection}
+text \emph{emphasized text} text. \cite{WC:1953}
+discovered the structure of DNA.
+
+A table:
+\begin{table}[!th]
+\begin{tabular}{|l|c|r|}
+\hline
+first  &  row  &  data \\
+second &  row  &  data \\
+\hline
+\end{tabular}
+\caption{This is the caption}
+\label{ex:table}
+\end{table}
+
+The table is numbered \ref{ex:table}.
+\end{document}
+\end{verbatim}
+
+
+
+\rule{0.3\linewidth}{0.25pt}
+\scriptsize
+
+Copyright \copyright\ 2012 Winston Chang
+
+http://www.stdout.org/$\sim$winston/latex/
+
+
+\end{multicols}
+\end{document}
