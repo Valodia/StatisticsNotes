@@ -87,16 +87,25 @@
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 % Don't print section numbers
-\setcounter{secnumdepth}{0}
+%\setcounter{secnumdepth}{0}
+
 
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0pt plus 0.5ex}
 
+\SweaveOpts{prefix.string=LMMfigs/LMMfig}
+
+\SweaveOpts{cache=TRUE}
 
 % -----------------------------------------------------------------------
 
 \begin{document}
+
+\SweaveOpts{concordance=TRUE}
+
+\setkeys{Gin}{width=\textwidth}
+
 
 \raggedright
 \footnotesize
@@ -112,17 +121,30 @@
 \setlength{\columnsep}{2pt}
 
 \begin{center}
-     \normalsize{Linear Modelling Summary Sheet} \\
+     \normalsize{Linear Mixed Models Summary Sheet} \\
     \footnotesize{
     Compiled by: Shravan Vasishth (vasishth@uni-potsdam.de)\\
     Version dated: \today}
 \end{center}
 
+<<echo=FALSE>>=
+## customize
+options(prompt="> ", continue="   ",width=35,
+show.signif.stars=FALSE)
+
+options(SweaveHooks=list(fig=function() par(bg="white", fg="black")))
+
+#set.seed(987654321)
+library(lme4)
+load("MAS473.Rdata")
+@
+
 %\textbf{Background for this summary sheet}
 
 %This is a summary for myself, for reviewing the material I learnt while doing an MSc-level course in statistics; your mileage may vary.
 %%input the notes:
-\input{"linmodnotes.tex"}
+
+\SweaveInput{LMMnotes.Rnw}
 
 Cheat sheet template taken from Winston Chang: http://www.stdout.org/$\sim$winston/latex/
 
